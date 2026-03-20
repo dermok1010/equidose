@@ -105,11 +105,19 @@
       font-size: 13px;
       color: #744210;
     }
+
+    .greeting {
+      font-size: 15px;
+      color: #2d6a4f;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
   </style>
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
 
+    <p id="greeting" class="greeting"></p>
     <h1>EquiDose</h1>
     <p class="subtitle">Equine Medication Calculator</p>
     
@@ -130,8 +138,11 @@
     
     <div id="results"></div>
   <script>
-    // This is JavaScript — think of it like a Python cell in a notebook
-    // A JS object is identical in concept to a Python dict
+    const hour = new Date().getHours()
+    const greeting = hour < 12 ? "Good morning, Alannah 🌅" 
+                   : hour < 18 ? "Good afternoon, Alannah ☀️" 
+                   : "Good evening, Alannah 🌙"
+    document.getElementById('greeting').textContent = greeting
   
     const medications = [
       {
