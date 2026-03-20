@@ -106,6 +106,7 @@
       color: #744210;
     }
   </style>
+  <link rel="manifest" href="manifest.json">
 </head>
 <body>
 
@@ -248,6 +249,10 @@
   })
 
   document.getElementById('results').innerHTML = html
+}
+
+    if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js')
 }
   </script>
 
