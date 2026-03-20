@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EquiDose</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+  
+    body {
+      font-family: sans-serif;
+      background: #f0f4f8;
+      color: #1a202c;
+      padding: 16px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+  
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #2d6a4f;
+      margin-bottom: 4px;
+    }
+  
+    p.subtitle {
+      color: #666;
+      margin-bottom: 24px;
+      font-size: 14px;
+    }
+  
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 6px;
+      margin-top: 16px;
+      font-size: 14px;
+    }
+  
+    input, select {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #cbd5e0;
+      border-radius: 8px;
+      background: white;
+    }
+  
+    button {
+      display: block;
+      width: 100%;
+      margin-top: 20px;
+      padding: 14px;
+      background: #2d6a4f;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  
+    button:active {
+      background: #1b4332;
+    }
+  
+    .med-card {
+      background: white;
+      border-radius: 10px;
+      padding: 16px;
+      margin-top: 16px;
+      border-left: 4px solid #2d6a4f;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+  
+    .med-card h3 {
+      font-size: 16px;
+      margin-bottom: 8px;
+      color: #1a202c;
+    }
+  
+    .med-card p {
+      font-size: 14px;
+      margin-bottom: 4px;
+      color: #4a5568;
+    }
+  
+    .dose-value {
+      font-size: 22px;
+      font-weight: 700;
+      color: #2d6a4f;
+    }
+  
+    .warning {
+      background: #fff8e1;
+      border-left: 3px solid #f6ad55;
+      padding: 8px 10px;
+      border-radius: 4px;
+      margin-top: 8px;
+      font-size: 13px;
+      color: #744210;
+    }
+  </style>
+</head>
+<body>
+
+    <h1>EquiDose</h1>
+    <p class="subtitle">Equine Medication Calculator</p>
+    
+    <label>Horse Weight (kg)</label>
+    <input type="number" id="weight" placeholder="e.g. 500" min="100" max="1200">
+    
+    <label>Category</label>
+    <select id="category">
+      <option value="all">All</option>
+      <option value="NSAID">NSAIDs</option>
+      <option value="Sedative">Sedatives</option>
+      <option value="Antibiotic">Antibiotics</option>
+      <option value="Anthelmintic">Anthelmintics</option>
+      <option value="Gastric">Gastric</option>
+    </select>
+    
+    <button onclick="calculate()">Calculate</button>
+    
+    <div id="results"></div>
+  <script>
+    // This is JavaScript — think of it like a Python cell in a notebook
+    // A JS object is identical in concept to a Python dict
+  
+    const medications = [
+      {
+        name: "Phenylbutazone (Bute)",
+        category: "NSAID",
+        dosePerKg: 4.4,
+        unit: "mg/kg",
+        routes: ["oral", "IV"],
+        frequency: "Every 12-24hrs",
+        maxDailyDosePerKg: 8.8,
+        warning: "Do not exceed 5 days. Give with feed. GI ulceration risk."
+      },
+      {
+        name: "Flunixin Meglumine (Banamine)",
+        category: "NSAID",
+        dosePerKg: 1.1,
+        unit: "mg/kg",
+        routes: ["oral", "IV", "IM"],
+        frequency: "Every 12-24hrs",
+        maxDailyDosePerKg: 2.2,
+        warning: "IM injection can cause muscle necrosis — IV preferred."
+      },
+      {
+        name: "Xylazine",
+        category: "Sedative",
+        dosePerKg: 1.1,
+        unit: "mg/kg",
+        routes: ["IV", "IM"],
+        frequency: "Single dose, repeat as needed",
+        maxDailyDosePerKg: null,
+        warning: "Use lower end of dose (0.5mg/kg) for IV. Monitor cardiorespiratory."
+      },
+      {
+        name: "Detomidine",
+        category: "Sedative",
+        dosePerKg: 0.02,
+        unit: "mg/kg",
+        routes: ["IV", "IM"],
+        frequency: "Single dose",
+        maxDailyDosePerKg: null,
+        warning: "Range 0.01-0.04mg/kg. Often combined with butorphanol."
+      },
+      {
+        name: "Procaine Penicillin",
+        category: "Antibiotic",
+        dosePerKg: 22000,
+        unit: "IU/kg",
+        routes: ["IM"],
+        frequency: "Every 12hrs",
+        maxDailyDosePerKg: null,
+        warning: "IM only. Never IV — can be fatal."
+      },
+      {
+        name: "Trimethoprim-Sulpha",
+        category: "Antibiotic",
+        dosePerKg: 30,
+        unit: "mg/kg",
+        routes: ["oral"],
+        frequency: "Every 12hrs",
+        maxDailyDosePerKg: null,
+        warning: "Avoid in horses with colitis or hindgut issues."
+      },
+      {
+        name: "Ivermectin",
+        category: "Anthelmintic",
+        dosePerKg: 0.2,
+        unit: "mg/kg",
+        routes: ["oral"],
+        frequency: "Single dose",
+        maxDailyDosePerKg: null,
+        warning: null
+      },
+      {
+        name: "Omeprazole",
+        category: "Gastric",
+        dosePerKg: 4,
+        unit: "mg/kg",
+        routes: ["oral"],
+        frequency: "SID",
+        maxDailyDosePerKg: null,
+        warning: "Treatment dose. Prophylactic dose is 1-2mg/kg."
+      }
+    ]
+  
+    // Quick sanity check — open browser console with F12 to see this
+    console.log("Medications loaded:", medications.length)
+
+    function calculate() {
+  const weight = parseFloat(document.getElementById('weight').value)
+  const category = document.getElementById('category').value
+
+  if (!weight) {
+    alert("Please enter a horse weight")
+    return
+  }
+
+  // Filter by category — identical to R's dplyr::filter or Python list comprehension
+  const filtered = category === 'all' 
+    ? medications 
+    : medications.filter(m => m.category === category)
+
+  // Build results HTML
+  let html = ''
+  filtered.forEach(med => {
+    const dose = (weight * med.dosePerKg).toFixed(1)
+    html += `
+        <div class="med-card">
+            <h3>${med.name}</h3>
+            <p class="dose-value">${dose} ${med.unit.replace('/kg', '')}</p>
+            <p><strong>Routes:</strong> ${med.routes.join(', ')}</p>
+            <p><strong>Frequency:</strong> ${med.frequency}</p>
+            ${med.warning ? `<div class="warning">⚠️ ${med.warning}</div>` : ''}
+        </div>
+        `
+  })
+
+  document.getElementById('results').innerHTML = html
+}
+  </script>
+
+</body>
+</html>
