@@ -1,0 +1,17 @@
+{
+  "name": "EquiDose",
+  "short_name": "EquiDose",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f0f4f8",
+  "theme_color": "#2d6a4f",
+  "icons": []
+}
+```
+
+So your folder should now have 3 files:
+```
+equidose/
+├── index.html
+├── sw.js
+└── manifest.json
