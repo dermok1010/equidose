@@ -4,13 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EquiDose</title>
+  <link rel="manifest" href="manifest.json">
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-  
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
       font-family: sans-serif;
       background: #f0f4f8;
@@ -19,252 +16,382 @@
       max-width: 600px;
       margin: 0 auto;
     }
-  
-    h1 {
-      font-size: 28px;
-      font-weight: 700;
-      color: #2d6a4f;
-      margin-bottom: 4px;
-    }
-  
-    p.subtitle {
-      color: #666;
-      margin-bottom: 24px;
-      font-size: 14px;
-    }
-  
-    label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 6px;
-      margin-top: 16px;
-      font-size: 14px;
-    }
-  
+
+    .greeting { font-size: 15px; color: #2d6a4f; font-weight: 600; margin-bottom: 4px; }
+    h1 { font-size: 28px; font-weight: 700; color: #2d6a4f; margin-bottom: 4px; }
+    p.subtitle { color: #666; margin-bottom: 24px; font-size: 14px; }
+
+    label { display: block; font-weight: 600; margin-bottom: 6px; margin-top: 16px; font-size: 14px; }
+
     input, select {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      font-size: 16px;
-      border: 1px solid #cbd5e0;
-      border-radius: 8px;
-      background: white;
-    }
-  
-    button {
-      display: block;
-      width: 100%;
-      margin-top: 20px;
-      padding: 14px;
-      background: #2d6a4f;
-      color: white;
-      font-size: 16px;
-      font-weight: 600;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-  
-    button:active {
-      background: #1b4332;
-    }
-  
-    .med-card {
-      background: white;
-      border-radius: 10px;
-      padding: 16px;
-      margin-top: 16px;
-      border-left: 4px solid #2d6a4f;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-    }
-  
-    .med-card h3 {
-      font-size: 16px;
-      margin-bottom: 8px;
-      color: #1a202c;
-    }
-  
-    .med-card p {
-      font-size: 14px;
-      margin-bottom: 4px;
-      color: #4a5568;
-    }
-  
-    .dose-value {
-      font-size: 22px;
-      font-weight: 700;
-      color: #2d6a4f;
-    }
-  
-    .warning {
-      background: #fff8e1;
-      border-left: 3px solid #f6ad55;
-      padding: 8px 10px;
-      border-radius: 4px;
-      margin-top: 8px;
-      font-size: 13px;
-      color: #744210;
+      display: block; width: 100%; padding: 12px;
+      font-size: 16px; border: 1px solid #cbd5e0;
+      border-radius: 8px; background: white;
     }
 
-    .greeting {
-      font-size: 15px;
-      color: #2d6a4f;
-      font-weight: 600;
-      margin-bottom: 4px;
+    button {
+      display: block; width: 100%; margin-top: 20px; padding: 14px;
+      background: #2d6a4f; color: white; font-size: 16px;
+      font-weight: 600; border: none; border-radius: 8px; cursor: pointer;
     }
+    button:active { background: #1b4332; }
+
+    .med-card {
+      background: white; border-radius: 10px; padding: 16px;
+      margin-top: 16px; border-left: 4px solid #2d6a4f;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+
+    .med-card h3 { font-size: 16px; margin-bottom: 10px; color: #1a202c; }
+
+    .dose-row {
+      background: #f0f7f4; border-radius: 6px;
+      padding: 10px 12px; margin-bottom: 8px;
+    }
+
+    .dose-label { font-size: 12px; color: #666; font-weight: 600; text-transform: uppercase; margin-bottom: 2px; }
+    .dose-value { font-size: 22px; font-weight: 700; color: #2d6a4f; }
+    .dose-sub { font-size: 13px; color: #555; margin-top: 2px; }
+
+    .meta { font-size: 13px; color: #4a5568; margin-bottom: 3px; }
+
+    .warning {
+      background: #fff8e1; border-left: 3px solid #f6ad55;
+      padding: 8px 10px; border-radius: 4px;
+      margin-top: 8px; font-size: 13px; color: #744210;
+    }
+
+    .withdrawal {
+      background: #fff0f0; border-left: 3px solid #fc8181;
+      padding: 8px 10px; border-radius: 4px;
+      margin-top: 6px; font-size: 13px; color: #742a2a;
+    }
+
+    .note {
+      background: #ebf8ff; border-left: 3px solid #63b3ed;
+      padding: 8px 10px; border-radius: 4px;
+      margin-top: 6px; font-size: 13px; color: #2c5282;
+    }
+
+    #no-results { text-align: center; color: #888; margin-top: 32px; font-size: 15px; }
   </style>
-  <link rel="manifest" href="manifest.json">
 </head>
 <body>
 
-    <p id="greeting" class="greeting"></p>
-    <h1>EquiDose</h1>
-    <p class="subtitle">Equine Medication Calculator</p>
-    
-    <label>Horse Weight (kg)</label>
-    <input type="number" id="weight" placeholder="e.g. 500" min="100" max="1200">
-    
-    <label>Category</label>
-    <select id="category">
-      <option value="all">All</option>
-      <option value="NSAID">NSAIDs</option>
-      <option value="Sedative">Sedatives</option>
-      <option value="Antibiotic">Antibiotics</option>
-      <option value="Anthelmintic">Anthelmintics</option>
-      <option value="Gastric">Gastric</option>
-    </select>
-    
-    <button onclick="calculate()">Calculate</button>
-    
-    <div id="results"></div>
+  <p id="greeting" class="greeting"></p>
+  <h1>EquiDose</h1>
+  <p class="subtitle">Equine Medication Calculator</p>
+
+  <label>Horse Weight (kg)</label>
+  <input type="number" id="weight" placeholder="e.g. 500" min="100" max="1200">
+
+  <label>Search or Filter</label>
+  <input type="text" id="search" placeholder="Search drug name...">
+
+  <label>Category</label>
+  <select id="category">
+    <option value="all">All</option>
+    <option value="NSAID">NSAIDs</option>
+    <option value="Steroid">Steroids</option>
+    <option value="Antispasmodic">Antispasmodics</option>
+    <option value="Antibiotic">Antibiotics</option>
+    <option value="Anthelmintic">Anthelmintics</option>
+    <option value="Anti-ulcer">Anti-ulcer</option>
+    <option value="Sedative">Sedatives</option>
+  </select>
+
+  <button onclick="calculate()">Calculate Doses</button>
+
+  <div id="results"></div>
+
   <script>
+    // Greeting
     const hour = new Date().getHours()
-    const greeting = hour < 12 ? "Good morning, Alannah 🌅" 
-                   : hour < 18 ? "Good afternoon, Alannah ☀️" 
+    const greeting = hour < 12 ? "Good morning, Alannah 🌅"
+                   : hour < 18 ? "Good afternoon, Alannah ☀️"
                    : "Good evening, Alannah 🌙"
     document.getElementById('greeting').textContent = greeting
-  
+
+    // Helper: calculate ml from mg dose and concentration
+    function toMl(dose, concentration) {
+      if (!concentration) return null
+      return (dose / concentration).toFixed(1)
+    }
+
     const medications = [
+      // ── NSAIDs ──────────────────────────────────────────
       {
         name: "Phenylbutazone (Bute)",
         category: "NSAID",
-        dosePerKg: 4.4,
-        unit: "mg/kg",
-        routes: ["oral", "IV"],
-        frequency: "Every 12-24hrs",
-        maxDailyDosePerKg: 8.8,
-        warning: "Do not exceed 5 days. Give with feed. GI ulceration risk."
+        routes: ["IV", "PO"],
+        doses: [
+          { label: "Full dose", mgPerKg: 4.4, concentration: 200, unit: "mg/ml" },
+          { label: "Half dose", mgPerKg: 2.2, concentration: 200, unit: "mg/ml" }
+        ],
+        withdrawal: "5 days",
+        warning: "Do not exceed 5 days. Give with feed. GI ulceration risk.",
+        frequency: "Every 12-24hrs"
       },
       {
-        name: "Flunixin Meglumine (Banamine)",
+        name: "Flunixin Meglumine",
         category: "NSAID",
-        dosePerKg: 1.1,
-        unit: "mg/kg",
-        routes: ["oral", "IV", "IM"],
-        frequency: "Every 12-24hrs",
-        maxDailyDosePerKg: 2.2,
-        warning: "IM injection can cause muscle necrosis — IV preferred."
+        routes: ["IV"],
+        doses: [
+          { label: "Full dose (pain)", mgPerKg: 1.1, concentration: 50, unit: "mg/ml" },
+          { label: "Half dose (inflammation)", mgPerKg: 0.55, concentration: 50, unit: "mg/ml" }
+        ],
+        withdrawal: "7 days",
+        warning: "IV only — IM can cause muscle necrosis.",
+        frequency: "Every 12-24hrs"
       },
+      {
+        name: "Meloxicam",
+        category: "NSAID",
+        routes: ["PO"],
+        doses: [
+          { label: "Dose", mgPerKg: 0.6, concentration: null, unit: "mg/sachet (330mg)" }
+        ],
+        withdrawal: null,
+        warning: null,
+        note: "Preferred NSAID for foals.",
+        frequency: "SID"
+      },
+      {
+        name: "Ketoprofen",
+        category: "NSAID",
+        routes: ["IV"],
+        doses: [
+          { label: "Dose", mgPerKg: 2.2, concentration: 100, unit: "mg/ml" }
+        ],
+        withdrawal: null,
+        warning: null,
+        note: "Preferred NSAID for foals.",
+        frequency: "SID"
+      },
+
+      // ── Steroids ─────────────────────────────────────────
+      {
+        name: "Dexamethasone",
+        category: "Steroid",
+        routes: ["IV", "IM"],
+        doses: [
+          { label: "Dose", mgPerKg: 0.06, concentration: 2, unit: "mg/ml" }
+        ],
+        withdrawal: "24hrs",
+        warning: "Caution — laminitis risk.",
+        frequency: "SID"
+      },
+      {
+        name: "Prednisolone",
+        category: "Steroid",
+        routes: ["PO"],
+        doses: [
+          { label: "Dose", mgPerKg: 1, concentration: null, unit: "mg (50mg tablets)" }
+        ],
+        withdrawal: "48hrs",
+        warning: "Caution — laminitis risk.",
+        note: "Dose shown in mg — divide by 50 for number of tablets.",
+        frequency: "SID"
+      },
+
+      // ── Antispasmodic ────────────────────────────────────
+      {
+        name: "Buscopan (Hyoscine)",
+        category: "Antispasmodic",
+        routes: ["IV"],
+        doses: [
+          { label: "Dose", mgPerKg: null, fixedPer100kg: 5, concentration: null, unit: "ml/100kg" }
+        ],
+        withdrawal: null,
+        warning: null,
+        note: "Dose is 5ml per 100kg — shown in ml directly.",
+        frequency: "As needed"
+      },
+
+      // ── Antibiotics ──────────────────────────────────────
+      {
+        name: "Gentamicin",
+        category: "Antibiotic",
+        routes: ["IV"],
+        doses: [
+          { label: "Dose", mgPerKg: 6.6, concentration: null, unit: "mg" }
+        ],
+        withdrawal: null,
+        warning: null,
+        note: "Concentration varies (85 or 100mg/ml) — dose shown in mg, divide by your vial concentration for ml.",
+        frequency: "SID"
+      },
+      {
+        name: "Trimethoprim-Sulpha (TMP-S)",
+        category: "Antibiotic",
+        routes: ["PO"],
+        doses: [
+          { label: "Dose", mgPerKg: 24, concentration: null, unit: "mg" }
+        ],
+        withdrawal: null,
+        warning: "Avoid in horses with colitis or hindgut issues.",
+        note: "Comes in sachets — dose shown in mg as sachet sizes vary.",
+        frequency: "Every 12hrs"
+      },
+      {
+        name: "Oxytetracycline",
+        category: "Antibiotic",
+        routes: ["IV"],
+        doses: [
+          { label: "Dose", mgPerKg: 6.6, concentration: 100, unit: "mg/ml" }
+        ],
+        withdrawal: null,
+        warning: null,
+        frequency: "SID"
+      },
+      {
+        name: "Enrofloxacin",
+        category: "Antibiotic",
+        routes: ["IV"],
+        doses: [
+          { label: "Dose", mgPerKg: 5, concentration: 100, unit: "mg/ml" }
+        ],
+        withdrawal: null,
+        warning: null,
+        frequency: "SID"
+      },
+      {
+        name: "Doxycycline",
+        category: "Antibiotic",
+        routes: ["PO"],
+        doses: [
+          { label: "Dose", mgPerKg: 10, concentration: null, unit: "mg" }
+        ],
+        withdrawal: null,
+        warning: null,
+        note: "Comes as powder — dose shown in mg.",
+        frequency: "Every 12hrs"
+      },
+
+      // ── Anti-ulcer ───────────────────────────────────────
+      {
+        name: "Omeprazole",
+        category: "Anti-ulcer",
+        routes: ["PO"],
+        doses: [
+          { label: "Treatment dose", mgPerKg: 4, concentration: 370, unit: "mg/g paste" },
+          { label: "Prophylactic dose", mgPerKg: 1, concentration: 370, unit: "mg/g paste" }
+        ],
+        withdrawal: "72hrs",
+        warning: "Must be given on an empty stomach.",
+        frequency: "SID"
+      },
+
+      // ── Sedatives ────────────────────────────────────────
       {
         name: "Xylazine",
         category: "Sedative",
-        dosePerKg: 1.1,
-        unit: "mg/kg",
         routes: ["IV", "IM"],
-        frequency: "Single dose, repeat as needed",
-        maxDailyDosePerKg: null,
-        warning: "Use lower end of dose (0.5mg/kg) for IV. Monitor cardiorespiratory."
+        doses: [
+          { label: "Dose", mgPerKg: 1.1, concentration: null, unit: "mg/ml (varies)" }
+        ],
+        withdrawal: null,
+        warning: "Use lower end (0.5mg/kg) for IV. Monitor cardiorespiratory.",
+        frequency: "Single dose"
       },
       {
         name: "Detomidine",
         category: "Sedative",
-        dosePerKg: 0.02,
-        unit: "mg/kg",
         routes: ["IV", "IM"],
-        frequency: "Single dose",
-        maxDailyDosePerKg: null,
-        warning: "Range 0.01-0.04mg/kg. Often combined with butorphanol."
+        doses: [
+          { label: "Dose", mgPerKg: 0.02, concentration: null, unit: "mg/ml (varies)" }
+        ],
+        withdrawal: null,
+        warning: "Range 0.01-0.04mg/kg. Often combined with butorphanol.",
+        frequency: "Single dose"
       },
-      {
-        name: "Procaine Penicillin",
-        category: "Antibiotic",
-        dosePerKg: 22000,
-        unit: "IU/kg",
-        routes: ["IM"],
-        frequency: "Every 12hrs",
-        maxDailyDosePerKg: null,
-        warning: "IM only. Never IV — can be fatal."
-      },
-      {
-        name: "Trimethoprim-Sulpha",
-        category: "Antibiotic",
-        dosePerKg: 30,
-        unit: "mg/kg",
-        routes: ["oral"],
-        frequency: "Every 12hrs",
-        maxDailyDosePerKg: null,
-        warning: "Avoid in horses with colitis or hindgut issues."
-      },
+
+      // ── Anthelmintics ────────────────────────────────────
       {
         name: "Ivermectin",
         category: "Anthelmintic",
-        dosePerKg: 0.2,
-        unit: "mg/kg",
-        routes: ["oral"],
-        frequency: "Single dose",
-        maxDailyDosePerKg: null,
-        warning: null
-      },
-      {
-        name: "Omeprazole",
-        category: "Gastric",
-        dosePerKg: 4,
-        unit: "mg/kg",
-        routes: ["oral"],
-        frequency: "SID",
-        maxDailyDosePerKg: null,
-        warning: "Treatment dose. Prophylactic dose is 1-2mg/kg."
+        routes: ["PO"],
+        doses: [
+          { label: "Dose", mgPerKg: 0.2, concentration: null, unit: "mg" }
+        ],
+        withdrawal: null,
+        warning: null,
+        frequency: "Single dose"
       }
     ]
-  
-    // Quick sanity check — open browser console with F12 to see this
-    console.log("Medications loaded:", medications.length)
 
     function calculate() {
-  const weight = parseFloat(document.getElementById('weight').value)
-  const category = document.getElementById('category').value
+      const weight = parseFloat(document.getElementById('weight').value)
+      const category = document.getElementById('category').value
+      const search = document.getElementById('search').value.toLowerCase().trim()
 
-  if (!weight) {
-    alert("Please enter a horse weight")
-    return
-  }
+      if (!weight) { alert("Please enter a horse weight"); return }
 
-  // Filter by category — identical to R's dplyr::filter or Python list comprehension
-  const filtered = category === 'all' 
-    ? medications 
-    : medications.filter(m => m.category === category)
+      let filtered = medications
 
-  // Build results HTML
-  let html = ''
-  filtered.forEach(med => {
-    const dose = (weight * med.dosePerKg).toFixed(1)
-    html += `
-        <div class="med-card">
+      if (category !== 'all') {
+        filtered = filtered.filter(m => m.category === category)
+      }
+
+      if (search) {
+        filtered = filtered.filter(m => m.name.toLowerCase().includes(search))
+      }
+
+      if (filtered.length === 0) {
+        document.getElementById('results').innerHTML = '<p id="no-results">No medications found.</p>'
+        return
+      }
+
+      let html = ''
+      filtered.forEach(med => {
+        // Build dose rows
+        let doseHtml = ''
+        med.doses.forEach(d => {
+          let mgDose, mlDose, displayDose
+
+          if (d.fixedPer100kg) {
+            // Buscopan — fixed volume per 100kg
+            mlDose = ((weight / 100) * d.fixedPer100kg).toFixed(1)
+            displayDose = `${mlDose} ml`
+          } else {
+            mgDose = (weight * d.mgPerKg).toFixed(1)
+            mlDose = d.concentration ? toMl(mgDose, d.concentration) : null
+            displayDose = mlDose ? `${mlDose} ml` : `${mgDose} mg`
+          }
+
+          doseHtml += `
+            <div class="dose-row">
+              <div class="dose-label">${d.label}</div>
+              <div class="dose-value">${displayDose}</div>
+              ${mgDose && mlDose ? `<div class="dose-sub">${mgDose} mg · ${d.concentration} ${d.unit}</div>` : ''}
+              ${!mlDose && !d.fixedPer100kg ? `<div class="dose-sub">${d.unit}</div>` : ''}
+            </div>
+          `
+        })
+
+        html += `
+          <div class="med-card">
             <h3>${med.name}</h3>
-            <p class="dose-value">${dose} ${med.unit.replace('/kg', '')}</p>
-            <p><strong>Routes:</strong> ${med.routes.join(', ')}</p>
-            <p><strong>Frequency:</strong> ${med.frequency}</p>
+            <p class="meta"><strong>Routes:</strong> ${med.routes.join(', ')} &nbsp;·&nbsp; <strong>Frequency:</strong> ${med.frequency}</p>
+            ${doseHtml}
             ${med.warning ? `<div class="warning">⚠️ ${med.warning}</div>` : ''}
-        </div>
+            ${med.withdrawal ? `<div class="withdrawal">🚫 Withdrawal: ${med.withdrawal}</div>` : ''}
+            ${med.note ? `<div class="note">ℹ️ ${med.note}</div>` : ''}
+          </div>
         `
-  })
+      })
 
-  document.getElementById('results').innerHTML = html
-}
+      document.getElementById('results').innerHTML = html
+    }
+
+    // Allow search to filter live as she types
+    document.getElementById('search').addEventListener('input', () => {
+      if (document.getElementById('weight').value) calculate()
+    })
 
     if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js')
-}
+      navigator.serviceWorker.register('/sw.js')
+    }
   </script>
 
 </body>
