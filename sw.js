@@ -1,4 +1,4 @@
-const CACHE = 'equidose-v3.1'
+const CACHE = 'equidose-v3.2'
 
 self.addEventListener('install', e => {
   e.waitUntil(
