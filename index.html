@@ -149,8 +149,7 @@
         category: "NSAID",
         routes: ["PO"],
         doses: [
-          { label: "Dose", mgPerKg: 0.6, concentration: null, unit: "mg/sachet (330mg)" }
-        ],
+          { label: "Dose", mgPerKg: 0.6, concentration: null, unit: "mg", sachetSize: 330, sachetUnit: "sachet" },
         withdrawal: null,
         warning: null,
         note: "Preferred NSAID for foals.",
@@ -186,8 +185,7 @@
         category: "Steroid",
         routes: ["PO"],
         doses: [
-          { label: "Dose", mgPerKg: 1, concentration: null, unit: "mg (50mg tablets)" }
-        ],
+          { label: "Dose", mgPerKg: 1, concentration: null, unit: "mg", tabletSize: 50, tabletUnit: "tablet" },
         withdrawal: "48hrs",
         warning: "Caution — laminitis risk.",
         note: "Dose shown in mg — divide by 50 for number of tablets.",
@@ -196,7 +194,7 @@
 
       // ── Antispasmodic ────────────────────────────────────
       {
-        name: "Buscopan (Hyoscine)",
+        name: "Buscopan",
         category: "Antispasmodic",
         routes: ["IV"],
         doses: [
@@ -352,7 +350,17 @@
           if (d.fixedPer100kg) {
             // Buscopan — fixed volume per 100kg
             mlDose = ((weight / 100) * d.fixedPer100kg).toFixed(1)
-            displayDose = `${mlDose} ml`
+            if (mlDose) {
+                displayDose = `${mlDose} ml`
+              } else if (d.tabletSize) {
+                const tablets = (mgDose / d.tabletSize).toFixed(1)
+                displayDose = `${mgDose} mg → ${tablets} ${d.tabletUnit}s`
+              } else if (d.sachetSize) {
+                const sachets = (mgDose / d.sachetSize).toFixed(2)
+                displayDose = `${mgDose} mg → ${sachets} ${d.sachetUnit}s`
+              } else {
+                displayDose = `${mgDose} mg`
+              }
           } else {
             mgDose = (weight * d.mgPerKg).toFixed(1)
             mlDose = d.concentration ? toMl(mgDose, d.concentration) : null
