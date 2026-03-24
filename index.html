@@ -350,25 +350,29 @@
           let mgDose, mlDose, displayDose
 
           if (d.fixedPer100kg) {
-            // Buscopan — fixed volume per 100kg
-            mlDose = ((weight / 100) * d.fixedPer100kg).toFixed(1)
-            if (mlDose) {
+                // Buscopan — fixed volume per 100kg
+                mlDose = ((weight / 100) * d.fixedPer100kg).toFixed(1)
                 displayDose = `${mlDose} ml`
-              } else if (d.tabletSize) {
-                const tablets = (mgDose / d.tabletSize).toFixed(1)
-                displayDose = `${mgDose} mg → ${tablets} ${d.tabletUnit}s`
-              } else if (d.sachetSize) {
-                const sachets = (mgDose / d.sachetSize).toFixed(2)
-                displayDose = `${mgDose} mg → ${sachets} ${d.sachetUnit}s`
+              
               } else {
-                displayDose = `${mgDose} mg`
+                mgDose = weight * d.mgPerKg
+                mlDose = d.concentration ? toMl(mgDose, d.concentration) : null
+              
+                if (mlDose) {
+                  displayDose = `${mlDose} ml`
+              
+                } else if (d.tabletSize) {
+                  const tablets = (mgDose / d.tabletSize).toFixed(1)
+                  displayDose = `${mgDose.toFixed(1)} mg → ${tablets} ${d.tabletUnit}s`
+              
+                } else if (d.sachetSize) {
+                  const sachets = (mgDose / d.sachetSize).toFixed(2)
+                  displayDose = `${mgDose.toFixed(1)} mg → ${sachets} ${d.sachetUnit}s`
+              
+                } else {
+                  displayDose = `${mgDose.toFixed(1)} mg`
+                }
               }
-          } else {
-            mgDose = (weight * d.mgPerKg).toFixed(1)
-            mlDose = d.concentration ? toMl(mgDose, d.concentration) : null
-            displayDose = mlDose ? `${mlDose} ml` : `${mgDose} mg`
-          }
-
           doseHtml += `
             <div class="dose-row">
               <div class="dose-label">${d.label}</div>
