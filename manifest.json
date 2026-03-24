@@ -7,11 +7,3 @@
   "theme_color": "#2d6a4f",
   "icons": []
 }
-```
-
-So your folder should now have 3 files:
-```
-equidose/
-├── index.html
-├── sw.js
-└── manifest.json
