@@ -466,7 +466,7 @@
       const n = Number(value)
       if (!Number.isFinite(n)) return ''
       const places = decimals == null ? 2 : decimals
-      return n.toFixed(places).replace(/\.0+$|(?<=\.[0-9]*?)0+$/g, '')
+      return n.toFixed(places).replace(/\.?0+$/, '')
     }
 
     function amount(value, unit) {
