@@ -2,411 +2,925 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#2d6a4f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <title>EquiDose</title>
-  <link rel="manifest" href="manifest.json">
+  <link rel="manifest" href="./manifest.json">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green: #2d6a4f;
+      --green-dark: #1b4332;
+      --green-pale: #edf7f1;
+      --orange-pale: #fff4e5;
+      --orange-border: #f4a261;
+      --orange-text: #7c4700;
+      --ink: #1a202c;
+      --muted: #667085;
+      --line: #d8dee7;
+      --panel: #ffffff;
+      --bg: #f0f4f8;
+      --danger: #a23b3b;
+    }
 
     body {
-      font-family: sans-serif;
-      background: #f0f4f8;
-      color: #1a202c;
-      padding: 16px;
-      max-width: 600px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      padding: max(16px, env(safe-area-inset-top)) 16px max(28px, env(safe-area-inset-bottom));
+      max-width: 640px;
       margin: 0 auto;
     }
 
-    .greeting { font-size: 15px; color: #2d6a4f; font-weight: 600; margin-bottom: 4px; }
-    h1 { font-size: 28px; font-weight: 700; color: #2d6a4f; margin-bottom: 4px; }
-    p.subtitle { color: #666; margin-bottom: 24px; font-size: 14px; }
+    .greeting { font-size: 15px; color: var(--green); font-weight: 650; margin-bottom: 4px; }
+    h1 { font-size: 30px; line-height: 1.1; color: var(--green); margin-bottom: 4px; }
+    h2 { font-size: 21px; margin-bottom: 6px; }
+    h3 { font-size: 16px; }
+    .subtitle { color: var(--muted); margin-bottom: 22px; font-size: 14px; }
+    .section-copy { color: var(--muted); font-size: 13px; line-height: 1.45; margin-bottom: 14px; }
 
-    label { display: block; font-weight: 600; margin-bottom: 6px; margin-top: 16px; font-size: 14px; }
-
+    label { display: block; font-weight: 650; margin: 15px 0 6px; font-size: 14px; }
     input, select {
-      display: block; width: 100%; padding: 12px;
-      font-size: 16px; border: 1px solid #cbd5e0;
-      border-radius: 8px; background: white;
+      display: block;
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: white;
+      color: var(--ink);
     }
+    input:focus, select:focus { outline: 2px solid rgba(45,106,79,.18); border-color: var(--green); }
 
     button {
-      display: block; width: 100%; margin-top: 20px; padding: 14px;
-      background: #2d6a4f; color: white; font-size: 16px;
-      font-weight: 600; border: none; border-radius: 8px; cursor: pointer;
+      display: block;
+      width: 100%;
+      margin-top: 16px;
+      padding: 13px 14px;
+      background: var(--green);
+      color: white;
+      font-size: 15px;
+      font-weight: 700;
+      border: none;
+      border-radius: 9px;
+      cursor: pointer;
     }
-    button:active { background: #1b4332; }
+    button:active { background: var(--green-dark); }
+    button.secondary { background: white; color: var(--green); border: 1px solid #9ebdad; }
+    button.quiet { background: #eef2f6; color: #344054; border: 1px solid var(--line); }
+    button.danger { background: white; color: var(--danger); border: 1px solid #e5b5b5; }
+    button.small { width: auto; display: inline-block; margin: 0; padding: 8px 10px; font-size: 13px; }
 
     .med-card {
-      background: white; border-radius: 10px; padding: 16px;
-      margin-top: 16px; border-left: 4px solid #2d6a4f;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      background: var(--panel);
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 16px;
+      border-left: 4px solid var(--green);
+      box-shadow: 0 1px 5px rgba(0,0,0,.07);
+    }
+    .med-head { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; margin-bottom: 5px; }
+    .category-tag { color: var(--muted); font-size: 12px; white-space: nowrap; }
+    .meta { font-size: 13px; color: #475467; margin-bottom: 10px; line-height: 1.4; }
+
+    .dose-block { margin-top: 10px; }
+    .dose-label { font-size: 12px; color: var(--muted); font-weight: 750; text-transform: uppercase; letter-spacing: .02em; margin-bottom: 4px; }
+    .dose-primary {
+      background: var(--green-pale);
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+    .dose-value { font-size: 27px; font-weight: 780; color: var(--green); line-height: 1.15; }
+    .dose-basis {
+      margin-top: 6px;
+      background: var(--orange-pale);
+      border-left: 3px solid var(--orange-border);
+      color: var(--orange-text);
+      padding: 8px 10px;
+      border-radius: 6px;
+      font-size: 12.5px;
+      line-height: 1.4;
     }
 
-    .med-card h3 { font-size: 16px; margin-bottom: 10px; color: #1a202c; }
+    #no-results { text-align: center; color: #888; margin-top: 28px; font-size: 15px; }
 
-    .dose-row {
-      background: #f0f7f4; border-radius: 6px;
-      padding: 10px 12px; margin-bottom: 8px;
+    .library-toggle { margin-top: 24px; }
+    #library-panel {
+      display: none;
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 12px;
+      box-shadow: 0 1px 5px rgba(0,0,0,.07);
+    }
+    #library-panel.open { display: block; }
+    .library-section { border-top: 1px solid #edf0f4; padding-top: 16px; margin-top: 18px; }
+    .inline-row { display: flex; gap: 8px; align-items: end; }
+    .inline-row > div { flex: 1; }
+    .inline-row button { width: auto; margin-top: 0; white-space: nowrap; }
+
+    .category-pills { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
+    .category-pill {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: #f3f6f8; border: 1px solid var(--line);
+      border-radius: 999px; padding: 7px 10px; font-size: 13px;
+    }
+    .category-pill button {
+      display: inline; width: auto; margin: 0; padding: 0 2px;
+      background: transparent; color: #8a3c3c; border: 0; font-size: 17px; line-height: 1;
     }
 
-    .dose-label { font-size: 12px; color: #666; font-weight: 600; text-transform: uppercase; margin-bottom: 2px; }
-    .dose-value { font-size: 22px; font-weight: 700; color: #2d6a4f; }
-    .dose-sub { font-size: 13px; color: #555; margin-top: 2px; }
-
-    .meta { font-size: 13px; color: #4a5568; margin-bottom: 3px; }
-
-    .warning {
-      background: #fff8e1; border-left: 3px solid #f6ad55;
-      padding: 8px 10px; border-radius: 4px;
-      margin-top: 8px; font-size: 13px; color: #744210;
+    .dose-editor {
+      border: 1px solid var(--line);
+      background: #fafbfc;
+      border-radius: 10px;
+      padding: 12px;
+      margin-top: 12px;
     }
+    .dose-editor-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .dose-editor-head button { margin: 0; width: auto; padding: 6px 9px; font-size: 12px; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .field-note { font-size: 12px; color: var(--muted); margin-top: 5px; }
 
-    .withdrawal {
-      background: #fff0f0; border-left: 3px solid #fc8181;
-      padding: 8px 10px; border-radius: 4px;
-      margin-top: 6px; font-size: 13px; color: #742a2a;
+    .library-drug {
+      display: flex; justify-content: space-between; align-items: center; gap: 10px;
+      padding: 11px 0; border-bottom: 1px solid #edf0f4;
     }
+    .library-drug:last-child { border-bottom: 0; }
+    .library-drug-name { font-weight: 700; font-size: 14px; }
+    .library-drug-meta { color: var(--muted); font-size: 12px; margin-top: 2px; }
+    .library-actions { display: flex; gap: 6px; flex-shrink: 0; }
 
-    .note {
-      background: #ebf8ff; border-left: 3px solid #63b3ed;
-      padding: 8px 10px; border-radius: 4px;
-      margin-top: 6px; font-size: 13px; color: #2c5282;
+    .form-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .hidden { display: none !important; }
+    .footer-note { color: var(--muted); text-align: center; font-size: 12px; margin: 16px 0 2px; }
+
+    @media (max-width: 440px) {
+      .two-col { grid-template-columns: 1fr; }
+      .library-drug { align-items: flex-start; }
+      .library-actions { flex-direction: column; }
     }
-
-    #no-results { text-align: center; color: #888; margin-top: 32px; font-size: 15px; }
   </style>
 </head>
 <body>
-
   <p id="greeting" class="greeting"></p>
   <h1>EquiDose</h1>
   <p class="subtitle">Equine Medication Calculator</p>
 
-  <label>Horse Weight (kg)</label>
-  <input type="number" id="weight" placeholder="e.g. 500" min="100" max="1200">
+  <label for="weight">Horse Weight (kg)</label>
+  <input type="number" id="weight" placeholder="e.g. 500" min="1" step="1" inputmode="decimal">
 
-  <label>Search or Filter</label>
+  <label for="search">Search</label>
   <input type="text" id="search" placeholder="Search drug name...">
 
-  <label>Category</label>
-  <select id="category">
-    <option value="all">All</option>
-    <option value="NSAID">NSAIDs</option>
-    <option value="Steroid">Steroids</option>
-    <option value="Antispasmodic">Antispasmodics</option>
-    <option value="Antibiotic">Antibiotics</option>
-    <option value="Anthelmintic">Anthelmintics</option>
-    <option value="Anti-ulcer">Anti-ulcer</option>
-    <option value="Sedative">Sedatives</option>
-  </select>
+  <label for="category">Category</label>
+  <select id="category"></select>
 
-  <button onclick="calculate()">Calculate Doses</button>
+  <button id="calculate-btn" type="button">Calculate Doses</button>
 
   <div id="results"></div>
 
+  <button id="library-toggle" class="secondary library-toggle" type="button">Manage Drug Library</button>
+
+  <section id="library-panel">
+    <h2>Drug Library</h2>
+    <p class="section-copy">Add or edit the drugs and sections that appear in EquiDose. Changes are stored on this device and remain available offline.</p>
+
+    <div class="library-section">
+      <h3>Sections</h3>
+      <div class="inline-row">
+        <div>
+          <label for="new-category">New section</label>
+          <input id="new-category" type="text" placeholder="e.g. Anaesthesia">
+        </div>
+        <button id="add-category-btn" class="small" type="button">Add</button>
+      </div>
+      <div id="category-pills" class="category-pills"></div>
+    </div>
+
+    <div class="library-section">
+      <h3 id="drug-form-title">Add Drug</h3>
+
+      <label for="drug-name">Drug name</label>
+      <input id="drug-name" type="text" placeholder="Drug name">
+
+      <label for="drug-category">Section</label>
+      <select id="drug-category"></select>
+
+      <div class="two-col">
+        <div>
+          <label for="drug-routes">Route</label>
+          <input id="drug-routes" type="text" placeholder="e.g. IV, IM">
+        </div>
+        <div>
+          <label for="drug-frequency">Frequency</label>
+          <input id="drug-frequency" type="text" placeholder="e.g. SID">
+        </div>
+      </div>
+
+      <div id="dose-editors"></div>
+      <button id="add-dose-btn" class="quiet" type="button">+ Add another dose option</button>
+
+      <div class="form-actions">
+        <button id="save-drug-btn" type="button">Save Drug</button>
+        <button id="cancel-edit-btn" class="quiet hidden" type="button">Cancel</button>
+      </div>
+    </div>
+
+    <div class="library-section">
+      <h3>Current Drugs</h3>
+      <div id="library-drugs"></div>
+    </div>
+
+    <div class="library-section">
+      <button id="reset-library-btn" class="danger" type="button">Reset Library to Original Drugs</button>
+    </div>
+  </section>
+
+  <p class="footer-note">EquiDose works offline once opened on this device.</p>
+
   <script>
-    // Greeting
-    const hour = new Date().getHours()
-    const greeting = hour < 12 ? "Good morning, Alannah 🌅"
-                   : hour < 18 ? "Good afternoon, Alannah ☀️"
-                   : "Good evening, Alannah 🌙"
-    document.getElementById('greeting').textContent = greeting
+    const STORAGE_KEY = 'equidose_library_v4'
+    const WEIGHT_KEY = 'equidose_weight_v4'
 
-    // Helper: calculate ml from mg dose and concentration
-    function toMl(dose, concentration) {
-      if (!concentration) return null
-      return (dose / concentration).toFixed(1)
-    }
+    const defaultCategories = [
+      'NSAID', 'Steroid', 'Antispasmodic', 'Antibiotic',
+      'Anthelmintic', 'Anti-ulcer', 'Sedative'
+    ]
 
-    const medications = [
-      // ── NSAIDs ──────────────────────────────────────────
+    const defaultMedications = [
       {
-        name: "Phenylbutazone (Bute)",
-        category: "NSAID",
-        routes: ["IV", "PO"],
+        id: 'bute',
+        name: 'Phenylbutazone (Bute)',
+        category: 'NSAID',
+        routes: 'IV, PO',
+        frequency: 'Every 12-24 hrs',
         doses: [
-          { label: "Full dose", mgPerKg: 4.4, concentration: 200, unit: "mg/ml" },
-          { label: "Half dose", mgPerKg: 2.2, concentration: 200, unit: "mg/ml" }
-        ],
-        withdrawal: "5 days",
-        warning: "Do not exceed 5 days. Give with feed. GI ulceration risk.",
-        frequency: "Every 12-24hrs"
+          { label: 'Full dose', type: 'mgkg_ml', rate: 4.4, strength: 200 },
+          { label: 'Half dose', type: 'mgkg_ml', rate: 2.2, strength: 200 }
+        ]
       },
       {
-        name: "Flunixin Meglumine",
-        category: "NSAID",
-        routes: ["IV"],
+        id: 'flunixin',
+        name: 'Flunixin Meglumine',
+        category: 'NSAID',
+        routes: 'IV',
+        frequency: 'Every 12-24 hrs',
         doses: [
-          { label: "Full dose (pain)", mgPerKg: 1.1, concentration: 50, unit: "mg/ml" },
-          { label: "Half dose (inflammation)", mgPerKg: 0.55, concentration: 50, unit: "mg/ml" }
-        ],
-        withdrawal: "7 days",
-        warning: "IV only — IM can cause muscle necrosis.",
-        frequency: "Every 12-24hrs"
+          { label: 'Full dose', type: 'mgkg_ml', rate: 1.1, strength: 50 },
+          { label: 'Half dose', type: 'mgkg_ml', rate: 0.55, strength: 50 }
+        ]
       },
       {
-        name: "Meloxicam",
-        category: "NSAID",
-        routes: ["PO"],
+        id: 'meloxicam',
+        name: 'Meloxicam',
+        category: 'NSAID',
+        routes: 'PO',
+        frequency: 'SID',
         doses: [
-          { label: "Dose", mgPerKg: 0.6, concentration: null, unit: "mg", sachetSize: 330, sachetUnit: "sachet" }
-          ],
-        withdrawal: null,
-        warning: null,
-        note: "Preferred NSAID for foals.",
-        frequency: "SID"
+          { label: 'Dose', type: 'mgkg_sachet', rate: 0.6, strength: 330 }
+        ]
       },
       {
-        name: "Ketoprofen",
-        category: "NSAID",
-        routes: ["IV"],
+        id: 'ketoprofen',
+        name: 'Ketoprofen',
+        category: 'NSAID',
+        routes: 'IV',
+        frequency: 'SID',
         doses: [
-          { label: "Dose", mgPerKg: 2.2, concentration: 100, unit: "mg/ml" }
-        ],
-        withdrawal: null,
-        warning: null,
-        note: "Preferred NSAID for foals.",
-        frequency: "SID"
-      },
-
-      // ── Steroids ─────────────────────────────────────────
-      {
-        name: "Dexamethasone",
-        category: "Steroid",
-        routes: ["IV", "IM"],
-        doses: [
-          { label: "Dose", mgPerKg: 0.06, concentration: 2, unit: "mg/ml" }
-        ],
-        withdrawal: "24hrs",
-        warning: "Caution — laminitis risk.",
-        frequency: "SID"
+          { label: 'Dose', type: 'mgkg_ml', rate: 2.2, strength: 100 }
+        ]
       },
       {
-        name: "Prednisolone",
-        category: "Steroid",
-        routes: ["PO"],
+        id: 'dexamethasone',
+        name: 'Dexamethasone',
+        category: 'Steroid',
+        routes: 'IV, IM',
+        frequency: 'SID',
         doses: [
-          { label: "Dose", mgPerKg: 1, concentration: null, unit: "mg", tabletSize: 50, tabletUnit: "tablet" }
-          ],
-        withdrawal: "48hrs",
-        warning: "Caution — laminitis risk.",
-        note: "Dose shown in mg — divide by 50 for number of tablets.",
-        frequency: "SID"
-      },
-
-      // ── Antispasmodic ────────────────────────────────────
-      {
-        name: "Buscopan",
-        category: "Antispasmodic",
-        routes: ["IV"],
-        doses: [
-          { label: "Dose", mgPerKg: null, fixedPer100kg: 5, concentration: null, unit: "ml/100kg" }
-        ],
-        withdrawal: null,
-        warning: null,
-        note: "Dose is 5ml per 100kg — shown in ml directly.",
-        frequency: "As needed"
-      },
-
-      // ── Antibiotics ──────────────────────────────────────
-      {
-        name: "Gentamicin",
-        category: "Antibiotic",
-        routes: ["IV"],
-        doses: [
-          { label: "Dose", mgPerKg: 6.6, concentration: null, unit: "mg" }
-        ],
-        withdrawal: null,
-        warning: null,
-        note: "Concentration varies (85 or 100mg/ml) — dose shown in mg, divide by your vial concentration for ml.",
-        frequency: "SID"
+          { label: 'Dose', type: 'mgkg_ml', rate: 0.06, strength: 2 }
+        ]
       },
       {
-        name: "Trimethoprim-Sulpha (TMP-S)",
-        category: "Antibiotic",
-        routes: ["PO"],
+        id: 'prednisolone',
+        name: 'Prednisolone',
+        category: 'Steroid',
+        routes: 'PO',
+        frequency: 'SID',
         doses: [
-          { label: "Dose", mgPerKg: 24, concentration: null, unit: "mg" }
-        ],
-        withdrawal: null,
-        warning: "Avoid in horses with colitis or hindgut issues.",
-        note: "Comes in sachets — dose shown in mg as sachet sizes vary.",
-        frequency: "Every 12hrs"
+          { label: 'Dose', type: 'mgkg_tablet', rate: 1, strength: 50 }
+        ]
       },
       {
-        name: "Oxytetracycline",
-        category: "Antibiotic",
-        routes: ["IV"],
+        id: 'buscopan',
+        name: 'Buscopan',
+        category: 'Antispasmodic',
+        routes: 'IV',
+        frequency: 'As needed',
         doses: [
-          { label: "Dose", mgPerKg: 6.6, concentration: 100, unit: "mg/ml" }
-        ],
-        withdrawal: null,
-        warning: null,
-        frequency: "SID"
+          { label: 'Dose', type: 'ml_per_weight', rate: 5, perKg: 100 }
+        ]
       },
       {
-        name: "Enrofloxacin",
-        category: "Antibiotic",
-        routes: ["IV"],
+        id: 'gentamicin',
+        name: 'Gentamicin',
+        category: 'Antibiotic',
+        routes: 'IV',
+        frequency: 'SID',
         doses: [
-          { label: "Dose", mgPerKg: 5, concentration: 100, unit: "mg/ml" }
-        ],
-        withdrawal: null,
-        warning: null,
-        frequency: "SID"
+          { label: 'Dose', type: 'mgkg_only', rate: 6.6 }
+        ]
       },
       {
-        name: "Doxycycline",
-        category: "Antibiotic",
-        routes: ["PO"],
+        id: 'tmps',
+        name: 'Trimethoprim-Sulpha (TMP-S)',
+        category: 'Antibiotic',
+        routes: 'PO',
+        frequency: 'Every 12 hrs',
         doses: [
-          { label: "Dose", mgPerKg: 10, concentration: null, unit: "mg" }
-        ],
-        withdrawal: null,
-        warning: null,
-        note: "Comes as powder — dose shown in mg.",
-        frequency: "Every 12hrs"
-      },
-
-      // ── Anti-ulcer ───────────────────────────────────────
-      {
-        name: "Omeprazole",
-        category: "Anti-ulcer",
-        routes: ["PO"],
-        doses: [
-          { label: "Treatment dose", mgPerKg: 4, concentration: 370, unit: "mg/g paste" },
-          { label: "Prophylactic dose", mgPerKg: 1, concentration: 370, unit: "mg/g paste" }
-        ],
-        withdrawal: "72hrs",
-        warning: "Must be given on an empty stomach.",
-        frequency: "SID"
-      },
-
-      // ── Sedatives ────────────────────────────────────────
-      {
-        name: "Xylazine",
-        category: "Sedative",
-        routes: ["IV", "IM"],
-        doses: [
-          { label: "Dose", mgPerKg: 1.1, concentration: null, unit: "mg/ml (varies)" }
-        ],
-        withdrawal: null,
-        warning: "Use lower end (0.5mg/kg) for IV. Monitor cardiorespiratory.",
-        frequency: "Single dose"
+          { label: 'Dose', type: 'mgkg_only', rate: 24 }
+        ]
       },
       {
-        name: "Detomidine",
-        category: "Sedative",
-        routes: ["IV", "IM"],
+        id: 'oxytetracycline',
+        name: 'Oxytetracycline',
+        category: 'Antibiotic',
+        routes: 'IV',
+        frequency: 'SID',
         doses: [
-          { label: "Dose", mgPerKg: 0.02, concentration: null, unit: "mg/ml (varies)" }
-        ],
-        withdrawal: null,
-        warning: "Range 0.01-0.04mg/kg. Often combined with butorphanol.",
-        frequency: "Single dose"
+          { label: 'Dose', type: 'mgkg_ml', rate: 6.6, strength: 100 }
+        ]
       },
-
-      // ── Anthelmintics ────────────────────────────────────
       {
-        name: "Ivermectin",
-        category: "Anthelmintic",
-        routes: ["PO"],
+        id: 'enrofloxacin',
+        name: 'Enrofloxacin',
+        category: 'Antibiotic',
+        routes: 'IV',
+        frequency: 'SID',
         doses: [
-          { label: "Dose", mgPerKg: 0.2, concentration: null, unit: "mg" }
-        ],
-        withdrawal: null,
-        warning: null,
-        frequency: "Single dose"
+          { label: 'Dose', type: 'mgkg_ml', rate: 5, strength: 100 }
+        ]
+      },
+      {
+        id: 'doxycycline',
+        name: 'Doxycycline',
+        category: 'Antibiotic',
+        routes: 'PO',
+        frequency: 'Every 12 hrs',
+        doses: [
+          { label: 'Dose', type: 'mgkg_only', rate: 10 }
+        ]
+      },
+      {
+        id: 'omeprazole',
+        name: 'Omeprazole',
+        category: 'Anti-ulcer',
+        routes: 'PO',
+        frequency: 'SID',
+        doses: [
+          { label: 'Treatment dose', type: 'mgkg_g', rate: 4, strength: 370 },
+          { label: 'Prophylactic dose', type: 'mgkg_g', rate: 1, strength: 370 }
+        ]
+      },
+      {
+        id: 'xylazine',
+        name: 'Xylazine',
+        category: 'Sedative',
+        routes: 'IV, IM',
+        frequency: 'Single dose',
+        doses: [
+          { label: 'Dose', type: 'mgkg_only', rate: 1.1 }
+        ]
+      },
+      {
+        id: 'detomidine',
+        name: 'Detomidine',
+        category: 'Sedative',
+        routes: 'IV, IM',
+        frequency: 'Single dose',
+        doses: [
+          { label: 'Dose', type: 'mgkg_only', rate: 0.02 }
+        ]
+      },
+      {
+        id: 'ivermectin',
+        name: 'Ivermectin',
+        category: 'Anthelmintic',
+        routes: 'PO',
+        frequency: 'Single dose',
+        doses: [
+          { label: 'Dose', type: 'mgkg_only', rate: 0.2 }
+        ]
       }
     ]
 
-    function calculate() {
+    const doseTypes = [
+      { value: 'mgkg_ml', label: 'mg/kg → mL (mg/mL product)' },
+      { value: 'mcgkg_ml', label: 'µg/kg → mL (mg/mL product)' },
+      { value: 'ml_per_weight', label: 'mL per bodyweight → mL' },
+      { value: 'mgkg_tablet', label: 'mg/kg → tablets' },
+      { value: 'mgkg_sachet', label: 'mg/kg → sachets' },
+      { value: 'mgkg_g', label: 'mg/kg → grams (mg/g product)' },
+      { value: 'mgkg_only', label: 'mg/kg → total mg' },
+      { value: 'fixed_ml', label: 'Fixed mL dose' }
+    ]
+
+    let library = loadLibrary()
+    let editingDrugId = null
+
+    function cloneDefaults() {
+      return {
+        categories: JSON.parse(JSON.stringify(defaultCategories)),
+        medications: JSON.parse(JSON.stringify(defaultMedications))
+      }
+    }
+
+    function loadLibrary() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY)
+        if (!saved) return cloneDefaults()
+        const parsed = JSON.parse(saved)
+        if (!parsed || !Array.isArray(parsed.categories) || !Array.isArray(parsed.medications)) return cloneDefaults()
+        return parsed
+      } catch (e) {
+        return cloneDefaults()
+      }
+    }
+
+    function saveLibrary() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(library))
+    }
+
+    function esc(value) {
+      return String(value == null ? '' : value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;')
+    }
+
+    function num(value, decimals) {
+      const n = Number(value)
+      if (!Number.isFinite(n)) return ''
+      const places = decimals == null ? 2 : decimals
+      return n.toFixed(places).replace(/\.0+$|(?<=\.[0-9]*?)0+$/g, '')
+    }
+
+    function amount(value, unit) {
+      const n = Number(value)
+      if (!Number.isFinite(n)) return ''
+      let places = 2
+      if (Math.abs(n) >= 10) places = 1
+      if (Math.abs(n) >= 100) places = 0
+      return num(n, places) + ' ' + unit
+    }
+
+    function greeting() {
+      const hour = new Date().getHours()
+      const text = hour < 12 ? 'Good morning, Alannah 🌅'
+        : hour < 18 ? 'Good afternoon, Alannah ☀️'
+        : 'Good evening, Alannah 🌙'
+      document.getElementById('greeting').textContent = text
+    }
+
+    function refreshCategorySelects() {
+      const main = document.getElementById('category')
+      const currentMain = main.value || 'all'
+      main.innerHTML = '<option value="all">All</option>' +
+        library.categories.map(function(c) {
+          return '<option value="' + esc(c) + '">' + esc(c) + '</option>'
+        }).join('')
+      if (currentMain === 'all' || library.categories.includes(currentMain)) main.value = currentMain
+
+      const drugCategory = document.getElementById('drug-category')
+      const currentDrug = drugCategory.value
+      drugCategory.innerHTML = library.categories.map(function(c) {
+        return '<option value="' + esc(c) + '">' + esc(c) + '</option>'
+      }).join('')
+      if (library.categories.includes(currentDrug)) drugCategory.value = currentDrug
+    }
+
+    function calculateDose(dose, weight) {
+      const rate = Number(dose.rate)
+      const strength = Number(dose.strength)
+
+      if (dose.type === 'mgkg_ml') {
+        const totalMg = weight * rate
+        const ml = totalMg / strength
+        return {
+          display: amount(ml, 'mL'),
+          basis: num(rate) + ' mg/kg × ' + num(weight) + ' kg = ' + num(totalMg, 1) + ' mg · ' + num(strength) + ' mg/mL'
+        }
+      }
+
+      if (dose.type === 'mcgkg_ml') {
+        const totalMcg = weight * rate
+        const totalMg = totalMcg / 1000
+        const ml = totalMg / strength
+        return {
+          display: amount(ml, 'mL'),
+          basis: num(rate) + ' µg/kg × ' + num(weight) + ' kg = ' + num(totalMcg, 1) + ' µg · ' + num(strength) + ' mg/mL'
+        }
+      }
+
+      if (dose.type === 'ml_per_weight') {
+        const perKg = Number(dose.perKg)
+        const ml = (weight / perKg) * rate
+        return {
+          display: amount(ml, 'mL'),
+          basis: num(rate) + ' mL per ' + num(perKg) + ' kg · horse weight ' + num(weight) + ' kg'
+        }
+      }
+
+      if (dose.type === 'mgkg_tablet') {
+        const totalMg = weight * rate
+        const count = totalMg / strength
+        return {
+          display: amount(count, Math.abs(count - 1) < 0.0001 ? 'tablet' : 'tablets'),
+          basis: num(rate) + ' mg/kg × ' + num(weight) + ' kg = ' + num(totalMg, 1) + ' mg · ' + num(strength) + ' mg/tablet'
+        }
+      }
+
+      if (dose.type === 'mgkg_sachet') {
+        const totalMg = weight * rate
+        const count = totalMg / strength
+        return {
+          display: amount(count, Math.abs(count - 1) < 0.0001 ? 'sachet' : 'sachets'),
+          basis: num(rate) + ' mg/kg × ' + num(weight) + ' kg = ' + num(totalMg, 1) + ' mg · ' + num(strength) + ' mg/sachet'
+        }
+      }
+
+      if (dose.type === 'mgkg_g') {
+        const totalMg = weight * rate
+        const grams = totalMg / strength
+        return {
+          display: amount(grams, 'g'),
+          basis: num(rate) + ' mg/kg × ' + num(weight) + ' kg = ' + num(totalMg, 1) + ' mg · ' + num(strength) + ' mg/g'
+        }
+      }
+
+      if (dose.type === 'fixed_ml') {
+        return {
+          display: amount(rate, 'mL'),
+          basis: 'Fixed dose'
+        }
+      }
+
+      const totalMg = weight * rate
+      return {
+        display: amount(totalMg, 'mg'),
+        basis: num(rate) + ' mg/kg × ' + num(weight) + ' kg'
+      }
+    }
+
+    function calculate(showAlert) {
       const weight = parseFloat(document.getElementById('weight').value)
       const category = document.getElementById('category').value
       const search = document.getElementById('search').value.toLowerCase().trim()
 
-      if (!weight) { alert("Please enter a horse weight"); return }
-
-      let filtered = medications
-
-      if (category !== 'all') {
-        filtered = filtered.filter(m => m.category === category)
+      if (!weight || weight <= 0) {
+        document.getElementById('results').innerHTML = ''
+        if (showAlert) alert('Please enter a horse weight')
+        return
       }
 
-      if (search) {
-        filtered = filtered.filter(m => m.name.toLowerCase().includes(search))
-      }
+      localStorage.setItem(WEIGHT_KEY, String(weight))
 
-      if (filtered.length === 0) {
+      let filtered = library.medications.slice()
+      if (category !== 'all') filtered = filtered.filter(function(m) { return m.category === category })
+      if (search) filtered = filtered.filter(function(m) { return m.name.toLowerCase().includes(search) })
+
+      if (!filtered.length) {
         document.getElementById('results').innerHTML = '<p id="no-results">No medications found.</p>'
         return
       }
 
-      let html = ''
-      filtered.forEach(med => {
-        // Build dose rows
-        let doseHtml = ''
-        med.doses.forEach(d => {
-          let mgDose, mlDose, displayDose
+      const html = filtered.map(function(med) {
+        const doseHtml = (med.doses || []).map(function(dose) {
+          const result = calculateDose(dose, weight)
+          return '<div class="dose-block">' +
+            '<div class="dose-label">' + esc(dose.label || 'Dose') + '</div>' +
+            '<div class="dose-primary"><div class="dose-value">' + esc(result.display) + '</div></div>' +
+            '<div class="dose-basis">' + esc(result.basis) + '</div>' +
+          '</div>'
+        }).join('')
 
-          if (d.fixedPer100kg) {
-                // Buscopan — fixed volume per 100kg
-                mlDose = ((weight / 100) * d.fixedPer100kg).toFixed(1)
-                displayDose = `${mlDose} ml`
-              
-              } else {
-                mgDose = weight * d.mgPerKg
-                mlDose = d.concentration ? toMl(mgDose, d.concentration) : null
-              
-                if (mlDose) {
-                  displayDose = `${mlDose} ml`
-              
-                } else if (d.tabletSize) {
-                  const tablets = (mgDose / d.tabletSize).toFixed(1)
-                  displayDose = `${mgDose.toFixed(1)} mg → ${tablets} ${d.tabletUnit}s`
-              
-                } else if (d.sachetSize) {
-                  const sachets = (mgDose / d.sachetSize).toFixed(2)
-                  displayDose = `${mgDose.toFixed(1)} mg → ${sachets} ${d.sachetUnit}s`
-              
-                } else {
-                  displayDose = `${mgDose.toFixed(1)} mg`
-                }
-              }
-          doseHtml += `
-            <div class="dose-row">
-              <div class="dose-label">${d.label}</div>
-              <div class="dose-value">${displayDose}</div>
-              ${mgDose && mlDose ? `<div class="dose-sub">${mgDose} mg · ${d.concentration} ${d.unit}</div>` : ''}
-              ${!mlDose && !d.fixedPer100kg ? `<div class="dose-sub">${d.unit}</div>` : ''}
-            </div>
-          `
-        })
+        const metaBits = []
+        if (med.routes) metaBits.push('Route: ' + med.routes)
+        if (med.frequency) metaBits.push('Frequency: ' + med.frequency)
 
-        html += `
-          <div class="med-card">
-            <h3>${med.name}</h3>
-            <p class="meta"><strong>Routes:</strong> ${med.routes.join(', ')} &nbsp;·&nbsp; <strong>Frequency:</strong> ${med.frequency}</p>
-            ${doseHtml}
-            ${med.warning ? `<div class="warning">⚠️ ${med.warning}</div>` : ''}
-            ${med.withdrawal ? `<div class="withdrawal">🚫 Withdrawal: ${med.withdrawal}</div>` : ''}
-            ${med.note ? `<div class="note">ℹ️ ${med.note}</div>` : ''}
-          </div>
-        `
-      })
+        return '<article class="med-card">' +
+          '<div class="med-head"><h3>' + esc(med.name) + '</h3><span class="category-tag">' + esc(med.category) + '</span></div>' +
+          (metaBits.length ? '<div class="meta">' + esc(metaBits.join(' · ')) + '</div>' : '') +
+          doseHtml +
+        '</article>'
+      }).join('')
 
       document.getElementById('results').innerHTML = html
     }
 
-    // Allow search to filter live as she types
-    document.getElementById('search').addEventListener('input', () => {
-      if (document.getElementById('weight').value) calculate()
-    })
+    function renderCategoryPills() {
+      const holder = document.getElementById('category-pills')
+      holder.innerHTML = library.categories.map(function(c) {
+        return '<span class="category-pill">' + esc(c) +
+          '<button type="button" aria-label="Delete ' + esc(c) + '" data-category="' + encodeURIComponent(c) + '">×</button>' +
+        '</span>'
+      }).join('')
+
+      holder.querySelectorAll('button[data-category]').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          deleteCategory(decodeURIComponent(btn.dataset.category))
+        })
+      })
+    }
+
+    function addCategory() {
+      const input = document.getElementById('new-category')
+      const name = input.value.trim()
+      if (!name) return
+      if (library.categories.some(function(c) { return c.toLowerCase() === name.toLowerCase() })) {
+        alert('That section already exists.')
+        return
+      }
+      library.categories.push(name)
+      saveLibrary()
+      input.value = ''
+      refreshLibraryUI()
+      document.getElementById('drug-category').value = name
+    }
+
+    function deleteCategory(name) {
+      const inUse = library.medications.some(function(m) { return m.category === name })
+      if (inUse) {
+        alert('Move or delete the drugs in this section before deleting it.')
+        return
+      }
+      if (!confirm('Delete the "' + name + '" section?')) return
+      library.categories = library.categories.filter(function(c) { return c !== name })
+      saveLibrary()
+      refreshLibraryUI()
+    }
+
+    function doseTypeOptions(selected) {
+      return doseTypes.map(function(t) {
+        return '<option value="' + t.value + '"' + (selected === t.value ? ' selected' : '') + '>' + esc(t.label) + '</option>'
+      }).join('')
+    }
+
+    function doseFieldLabels(type) {
+      if (type === 'mcgkg_ml') return { rate: 'Dose rate (µg/kg)', strength: 'Concentration (mg/mL)', showStrength: true, showPerKg: false }
+      if (type === 'ml_per_weight') return { rate: 'Volume (mL)', strength: '', showStrength: false, showPerKg: true }
+      if (type === 'mgkg_tablet') return { rate: 'Dose rate (mg/kg)', strength: 'Tablet strength (mg/tablet)', showStrength: true, showPerKg: false }
+      if (type === 'mgkg_sachet') return { rate: 'Dose rate (mg/kg)', strength: 'Sachet strength (mg/sachet)', showStrength: true, showPerKg: false }
+      if (type === 'mgkg_g') return { rate: 'Dose rate (mg/kg)', strength: 'Product strength (mg/g)', showStrength: true, showPerKg: false }
+      if (type === 'fixed_ml') return { rate: 'Fixed volume (mL)', strength: '', showStrength: false, showPerKg: false }
+      if (type === 'mgkg_only') return { rate: 'Dose rate (mg/kg)', strength: '', showStrength: false, showPerKg: false }
+      return { rate: 'Dose rate (mg/kg)', strength: 'Concentration (mg/mL)', showStrength: true, showPerKg: false }
+    }
+
+    function addDoseEditor(dose) {
+      const data = dose || { label: 'Dose', type: 'mgkg_ml', rate: '', strength: '' }
+      const holder = document.getElementById('dose-editors')
+      const wrap = document.createElement('div')
+      wrap.className = 'dose-editor'
+      wrap.innerHTML =
+        '<div class="dose-editor-head"><strong>Dose option</strong><button class="danger remove-dose" type="button">Remove</button></div>' +
+        '<label>Dose label</label><input class="dose-label-input" type="text" value="' + esc(data.label || 'Dose') + '" placeholder="e.g. Full dose">' +
+        '<label>Calculation type</label><select class="dose-type">' + doseTypeOptions(data.type || 'mgkg_ml') + '</select>' +
+        '<div class="two-col">' +
+          '<div class="rate-field"><label class="rate-label"></label><input class="dose-rate" type="number" step="any" inputmode="decimal" value="' + esc(data.rate == null ? '' : data.rate) + '"></div>' +
+          '<div class="strength-field"><label class="strength-label"></label><input class="dose-strength" type="number" step="any" inputmode="decimal" value="' + esc(data.strength == null ? '' : data.strength) + '"></div>' +
+          '<div class="perkg-field"><label>Per bodyweight (kg)</label><input class="dose-perkg" type="number" step="any" inputmode="decimal" value="' + esc(data.perKg == null ? 100 : data.perKg) + '"></div>' +
+        '</div>'
+
+      holder.appendChild(wrap)
+
+      const typeSelect = wrap.querySelector('.dose-type')
+      typeSelect.addEventListener('change', function() { updateDoseEditorFields(wrap) })
+      wrap.querySelector('.remove-dose').addEventListener('click', function() {
+        if (document.querySelectorAll('.dose-editor').length === 1) {
+          alert('A drug needs at least one dose option.')
+          return
+        }
+        wrap.remove()
+      })
+      updateDoseEditorFields(wrap)
+    }
+
+    function updateDoseEditorFields(wrap) {
+      const type = wrap.querySelector('.dose-type').value
+      const labels = doseFieldLabels(type)
+      wrap.querySelector('.rate-label').textContent = labels.rate
+      wrap.querySelector('.strength-label').textContent = labels.strength
+      wrap.querySelector('.strength-field').classList.toggle('hidden', !labels.showStrength)
+      wrap.querySelector('.perkg-field').classList.toggle('hidden', !labels.showPerKg)
+    }
+
+    function collectDoses() {
+      const editors = Array.from(document.querySelectorAll('.dose-editor'))
+      const doses = []
+
+      for (const editor of editors) {
+        const type = editor.querySelector('.dose-type').value
+        const label = editor.querySelector('.dose-label-input').value.trim() || 'Dose'
+        const rate = parseFloat(editor.querySelector('.dose-rate').value)
+        const strength = parseFloat(editor.querySelector('.dose-strength').value)
+        const perKg = parseFloat(editor.querySelector('.dose-perkg').value)
+        const labels = doseFieldLabels(type)
+
+        if (!Number.isFinite(rate) || rate <= 0) {
+          alert('Enter a valid dose rate or volume for each dose option.')
+          return null
+        }
+        if (labels.showStrength && (!Number.isFinite(strength) || strength <= 0)) {
+          alert('Enter a valid product concentration or strength.')
+          return null
+        }
+        if (labels.showPerKg && (!Number.isFinite(perKg) || perKg <= 0)) {
+          alert('Enter a valid bodyweight amount.')
+          return null
+        }
+
+        const dose = { label: label, type: type, rate: rate }
+        if (labels.showStrength) dose.strength = strength
+        if (labels.showPerKg) dose.perKg = perKg
+        doses.push(dose)
+      }
+      return doses
+    }
+
+    function resetDrugForm() {
+      editingDrugId = null
+      document.getElementById('drug-form-title').textContent = 'Add Drug'
+      document.getElementById('drug-name').value = ''
+      document.getElementById('drug-routes').value = ''
+      document.getElementById('drug-frequency').value = ''
+      document.getElementById('dose-editors').innerHTML = ''
+      addDoseEditor()
+      document.getElementById('save-drug-btn').textContent = 'Save Drug'
+      document.getElementById('cancel-edit-btn').classList.add('hidden')
+    }
+
+    function saveDrug() {
+      const name = document.getElementById('drug-name').value.trim()
+      const category = document.getElementById('drug-category').value
+      const routes = document.getElementById('drug-routes').value.trim()
+      const frequency = document.getElementById('drug-frequency').value.trim()
+      const doses = collectDoses()
+
+      if (!name) {
+        alert('Enter a drug name.')
+        return
+      }
+      if (!category) {
+        alert('Choose a section.')
+        return
+      }
+      if (!doses) return
+
+      if (editingDrugId) {
+        const index = library.medications.findIndex(function(m) { return m.id === editingDrugId })
+        if (index >= 0) {
+          library.medications[index] = {
+            id: editingDrugId,
+            name: name,
+            category: category,
+            routes: routes,
+            frequency: frequency,
+            doses: doses
+          }
+        }
+      } else {
+        library.medications.push({
+          id: 'custom-' + Date.now(),
+          name: name,
+          category: category,
+          routes: routes,
+          frequency: frequency,
+          doses: doses
+        })
+      }
+
+      saveLibrary()
+      resetDrugForm()
+      refreshLibraryUI()
+      calculate(false)
+    }
+
+    function editDrug(id) {
+      const med = library.medications.find(function(m) { return m.id === id })
+      if (!med) return
+
+      editingDrugId = id
+      document.getElementById('drug-form-title').textContent = 'Edit Drug'
+      document.getElementById('drug-name').value = med.name || ''
+      document.getElementById('drug-category').value = med.category || ''
+      document.getElementById('drug-routes').value = med.routes || ''
+      document.getElementById('drug-frequency').value = med.frequency || ''
+      document.getElementById('dose-editors').innerHTML = ''
+      ;(med.doses || []).forEach(function(d) { addDoseEditor(d) })
+      if (!med.doses || !med.doses.length) addDoseEditor()
+
+      document.getElementById('save-drug-btn').textContent = 'Update Drug'
+      document.getElementById('cancel-edit-btn').classList.remove('hidden')
+      document.getElementById('drug-form-title').scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+
+    function deleteDrug(id) {
+      const med = library.medications.find(function(m) { return m.id === id })
+      if (!med) return
+      if (!confirm('Delete "' + med.name + '"?')) return
+      library.medications = library.medications.filter(function(m) { return m.id !== id })
+      saveLibrary()
+      if (editingDrugId === id) resetDrugForm()
+      refreshLibraryUI()
+      calculate(false)
+    }
+
+    function renderLibraryDrugs() {
+      const holder = document.getElementById('library-drugs')
+      const meds = library.medications.slice().sort(function(a, b) {
+        return a.category.localeCompare(b.category) || a.name.localeCompare(b.name)
+      })
+
+      holder.innerHTML = meds.map(function(med) {
+        return '<div class="library-drug">' +
+          '<div><div class="library-drug-name">' + esc(med.name) + '</div><div class="library-drug-meta">' + esc(med.category) + '</div></div>' +
+          '<div class="library-actions">' +
+            '<button class="small quiet edit-drug" type="button" data-id="' + esc(med.id) + '">Edit</button>' +
+            '<button class="small danger delete-drug" type="button" data-id="' + esc(med.id) + '">Delete</button>' +
+          '</div>' +
+        '</div>'
+      }).join('')
+
+      holder.querySelectorAll('.edit-drug').forEach(function(btn) {
+        btn.addEventListener('click', function() { editDrug(btn.dataset.id) })
+      })
+      holder.querySelectorAll('.delete-drug').forEach(function(btn) {
+        btn.addEventListener('click', function() { deleteDrug(btn.dataset.id) })
+      })
+    }
+
+    function refreshLibraryUI() {
+      refreshCategorySelects()
+      renderCategoryPills()
+      renderLibraryDrugs()
+    }
+
+    function resetLibrary() {
+      if (!confirm('Reset the drug library to the original EquiDose drugs? Any drugs or sections added on this device will be removed.')) return
+      library = cloneDefaults()
+      saveLibrary()
+      resetDrugForm()
+      refreshLibraryUI()
+      calculate(false)
+    }
+
+    function init() {
+      greeting()
+      refreshLibraryUI()
+      resetDrugForm()
+
+      const savedWeight = localStorage.getItem(WEIGHT_KEY)
+      if (savedWeight) {
+        document.getElementById('weight').value = savedWeight
+        calculate(false)
+      }
+
+      document.getElementById('calculate-btn').addEventListener('click', function() { calculate(true) })
+      document.getElementById('search').addEventListener('input', function() { calculate(false) })
+      document.getElementById('category').addEventListener('change', function() { calculate(false) })
+      document.getElementById('weight').addEventListener('input', function() {
+        const value = document.getElementById('weight').value
+        if (value) localStorage.setItem(WEIGHT_KEY, value)
+        calculate(false)
+      })
+
+      document.getElementById('library-toggle').addEventListener('click', function() {
+        const panel = document.getElementById('library-panel')
+        panel.classList.toggle('open')
+        document.getElementById('library-toggle').textContent = panel.classList.contains('open') ? 'Close Drug Library' : 'Manage Drug Library'
+      })
+      document.getElementById('add-category-btn').addEventListener('click', addCategory)
+      document.getElementById('new-category').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') addCategory()
+      })
+      document.getElementById('add-dose-btn').addEventListener('click', function() { addDoseEditor() })
+      document.getElementById('save-drug-btn').addEventListener('click', saveDrug)
+      document.getElementById('cancel-edit-btn').addEventListener('click', resetDrugForm)
+      document.getElementById('reset-library-btn').addEventListener('click', resetLibrary)
+    }
+
+    init()
 
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js')
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('./sw.js')
+      })
     }
   </script>
-
 </body>
 </html>
