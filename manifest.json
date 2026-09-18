@@ -1,7 +1,8 @@
 {
   "name": "EquiDose",
   "short_name": "EquiDose",
-  "start_url": "/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#f0f4f8",
   "theme_color": "#2d6a4f",
